@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador de Reportes</title>
+
+
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!--link rel="stylesheet" href="https://rawgit.com/MayraDelgado/reportes/master/bower_components/angular-material/angular-material.min.css"-->
+  <link rel="stylesheet" href="https://rawgit.com/B-3PO/angular-material-expansion-panel/master/dist/md-expansion-panel.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+  <!--script src="https://rawgit.com/MayraDelgado/reportes/master/bower_components/angular/angular.min.js"></script-->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-aria.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-animate.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+   
+  <script src="https://rawgit.com/B-3PO/angular-material-expansion-panel/master/dist/md-expansion-panel.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table.min.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.10/md-data-table.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@3.1.1/dist/sweetalert2.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@3.1.1/dist/sweetalert2.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+  <script>
+    var url = "../img/pruebaExcelAddin.xlsx";
+
+    /* set up async GET request */
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "arraybuffer";
+
+    req.onload = function (e) {
+      var data = new Uint8Array(req.response);
+      var workbook = XLSX.read(data, {
+        type: "array"
+      });
+      var first_sheet_name = workbook.SheetNames[0];
+
+      /* Get worksheet */
+      var worksheet = workbook.Sheets[first_sheet_name];
+      console.log(XLSX.utils.sheet_to_json(worksheet));
+    }
+
+    req.send();
+  </script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+
+  <!-- build:js scripts/vendor.js -->
+  <!-- bower:js -->
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <script src="scripts/datosController.js"></script>
+  <!-- endbuild -->
+</head>
+
+<body>
+
+  <div id="generadorReportesPepsico" class="hidden">
+
+    <header class="geotabPageHeader">
+      <h1 class="geotabPageName">Generador de reportes
+        <span class="subdued">Auditoría de registros</span>
+      </h1>
+      <div class="pageNameSecondary">
+        <h3 class="geotabSecondaryTitle">
+          <span id="generadorReportesPepsico-user"></span>
+        </h3>
+      </div>
+    </header>
+    <div layout="row" layout-md="column" ng-controller="accesoDatosController">
+      <div flex>
+        <br>
+        <br>
+        <!--Panel consulta por fechas de instalacion-->
+        <md-expansion-panel md-component-id="panelOne">
+          <md-expansion-panel-collapsed>
+            <div class="md-summary" style="color:rgb(37, 71, 123)">
+              <font size="3">CONSULTA POR FECHA DE INSTALACIÓN</font>
+            </div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+          </md-expansion-panel-collapsed>
+          <md-expansion-panel-expanded>
+            <md-expansion-panel-header>
+              <div class="md-summary" style="color:rgb(37, 71, 123)">
+                <font size="3">CONSULTA POR FECHA DE INSTALACIÓN</font>
+              </div>
+              <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+            <md-expansion-panel-content>
+              <!--radioButton consulta fechas -->
+              <!--fecha inicio-->
+              <div layout="row" layout-xs="column">
+                <div flex>
+                  <div flex-gt-sm="50">
+                    <md-input-container class="md-block">
+                      <md-switch class="md-primary" name="special" ng-model="checked" required>
+                        Habilitar consulta por fechas
+                      </md-switch>
+                    </md-input-container>
+                  </div>
+                  <div layout="row" layout-xs="column" ng-if="checked" flex="100">
+                    <div flex>
+                      <div class="container">
+                        <md-content layout-padding>
+                          <div layout-gt-xs="row">
+                            <div flex-gt-xs>
+                              <h4>Fecha inicio</h4>
+                              <md-datepicker ng-model="Data.start" md-placeholder="Enter date"></md-datepicker>
+                            </div>
+                          </div>
+                        </md-content>
+                      </div>
+                    </div>
+                    <div flex>
+                      <div class="container">
+                        <md-content layout-padding>
+                          <div layout-gt-xs="row">
+                            <div flex-gt-xs>
+                              <h4>Fecha fin</h4>
+                              <md-datepicker ng-model="Data.end" md-placeholder="Enter date"></md-datepicker>
+                            </div>
+                          </div>
+                        </md-content>
+                      </div>
+                    </div>
+                    <!--btn consulta-->
+                    <acronym title="">
+                      <button class="optionsMenu_AutocompleteButton geotabButton" ng-click="fechasreport()">
+                        <span class="md-caption">Consultar</span>
+                      </button>
+                    </acronym>
+                    <!-- fin btn consulta-->
+                  </div>
+                </div>
+                <div flex>
+                  <div flex-gt-sm="50">
+                    <md-input-container class="md-block">
+                      <md-switch class="md-primary" name="special" ng-model="checked1" required>
+                        Habilitar consulta excel
+                      </md-switch>
+                    </md-input-container>
+                  </div>
+                  <div layout="row" layout-xs="column" ng-show="checked1">
+                    <div flex>
+                      <div class="container">
+                        <md-content layout-padding>
+                          <div layout-gt-xs="row">
+                            <div class="form-group">
+                              <!--input type="file" id="files" class="form-control" required /-->
+                              <div id="drop_zone" class="upload-drop-zone" required> Suelta los archivos aquí.</div>
+                              <output id="list"></output>
+                              <script>
+                                function handleFileSelect(evt) {
+                                  evt.stopPropagation();
+                                  evt.preventDefault();
+
+                                  var files = evt.dataTransfer.files; // FileList object.
+
+                                  // files is a FileList of File objects. List some properties.
+                                  var output = [];
+                                  for (var i = 0, f; f = files[i]; i++) {
+                                    output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                                      f.size, ' bytes, last modified: ',
+                                      f.lastModifiedDate.toLocaleDateString(), '</li>');
+                                  }
+                                  document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+                                }
+
+                                function handleDragOver(evt) {
+                                  evt.stopPropagation();
+                                  evt.preventDefault();
+                                  evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+                                }
+
+                                // Setup the dnd listeners.
+                                var dropZone = document.getElementById('drop_zone');
+                                dropZone.addEventListener('dragover', handleDragOver, false);
+                                dropZone.addEventListener('drop', handleFileSelect, false);
+                              </script>
+                              <script>
+                                function handleFileSelect(evt) {
+                                  var files = evt.target.files; // FileList object
+
+                                  // Loop through the FileList and render image files as thumbnails.
+                                  for (var i = 0, f; f = files[i]; i++) {
+
+                                    // Only process image files.
+                                    if (!f.type.match('image.*')) {
+                                      continue;
+                                    }
+
+                                    var reader = new FileReader();
+
+                                    // Closure to capture the file information.
+                                    reader.onload = (function (theFile) {
+                                      return function (e) {
+                                        // Render thumbnail.
+                                        var span = document.createElement('span');
+                                        span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                                          '" title="', escape(theFile.name), '"/>'
+                                        ].join('');
+                                        document.getElementById('list').insertBefore(span, null);
+                                      };
+                                    })(f);
+
+                                    // Read in the image file as a data URL.
+                                    reader.readAsArrayBuffer(f);
+                                  }
+                                }
+
+                                document.getElementById('drop_zone').addEventListener('change', handleFileSelect, false);
+                              </script>
+                            </div>
+                          </div>
+                        </md-content>
+                      </div>
+                    </div>
+                    <!--div flex>
+                      <div class="container">
+                        <md-content layout-padding>
+                          <div layout-gt-xs="row">
+                            <div class="form-group">
+                              <label for="files">
+                                Cargue un archivo con formato CSV:</label>
+
+                              <input type="file" id="files" class="form-control" required />
+                              <output id="list"></output>
+                              
+                            </div>
+                          </div>
+                        </md-content>
+                      </div>
+                    </div-->
+                    <acronym title="">
+                      <js-xls onread="read" onerror="error"></js-xls>
+                      <button type="submit" id="submit-file" class="optionsMenu_AutocompleteButton geotabButton" ng-click="papaParse()">
+                        <span class="md-caption">Subir archivo</span>
+                      </button>
+                    </acronym>
+                    <br>
+                    <br>
+                    <acronym title="">
+                      <button class="optionsMenu_AutocompleteButton geotabButton">
+                        <span class="md-caption">Consultar</span>
+                      </button>
+                    </acronym>
+                    <!--fin fechas fin-->
+                  </div>
+                  <!--div layout="row" layout-xs="column" ng-show="checked1" id="muestraExcel">
+                    <div class="container">
+                      <div layout-gt-xs="row">
+                        <md-table-container>
+                          <!ng-model="selected" esto va en la tabla>
+                          <table md-table>
+                            <thead md-head>
+                              <tr md-row>
+                                <th md-column md-numeric>Económico </th>
+                                <th md-column md-numeric>Fecha inicio de consulta</th>
+                                <th md-column md-numeric>Fecha fin de consulta</th>
+                              </tr>
+                            </thead>
+                            <tbody md-body>
+                              <tr md-row md-select-id="name " md-auto-select>
+                                <!td>{{ $index + 1 }}</td>
+                                <td md-cell>{{dispositivo.vehicleIdentificationNumber}}</td>
+                                <td md-cell>{{respvinNameDevice.name}}</td>
+                                <td md-cell>{{dispositivo.GOSerialNumber}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </md-table-container>
+                      </div>
+                    </div>
+                  </div-->
+                </div>
+              </div>
+            </md-expansion-panel-content>
+            <!-- fin radioButton consulta excel -->
+            <!--boton consultar-->
+            <md-expansion-panel-footer>
+              <div flex="100">
+                <acronym title="Exportar Tabla">
+                  <md-button class="optionsMenu_AutocompleteButton geotabButton" ng-click="crearCSVFechas()">
+                    <i class="material-icons md-24">cloud_download </i>
+                  </md-button>
+                </acronym>
+              </div>
+            </md-expansion-panel-footer>
+            <!--fin btn consultar-->
+            <br>
+            <md-table-container>
+              <!--ng-model="selected" esto va en la tabla-->
+              <table md-table md-row-select="options.rowSelection" ng-model="selected" md-progress="promise" id="fechaInstalacion">
+                <thead md-head>
+                  <tr md-row class="th-table">
+                    <th md-column md-numeric>Id</th>
+                    <!--th md-column md-numeric>VIN </th-->
+                    <th md-column md-numeric>Unidad </th>
+                    <th md-column md-numeric>Numero de serie</th>
+                    <th md-column md-numeric>Ultima comunicacion Geotab</th>
+                    <th md-column md-numeric>Fecha inicio de consulta</th>
+                    <th md-column md-numeric>Fecha fin de consulta</th>
+                    <th md-column md-numeric>Geotab boton de panico</th>
+                    <th md-column md-numeric>Cinturon de seguridad</th>
+                    <th md-column md-numeric>Reversa</th>
+                    <th md-column md-numeric>Aux 5</th>
+                    <th md-column md-numeric>Aux 6</th>
+                    <th md-column md-numeric>Aux 7</th>
+                    <th md-column md-numeric>Aux 8</th>
+                    <th md-column md-numeric>Circulo de seguridad</th>
+                    <th md-column md-numeric>sunTech Id</th>
+                    <th md-column md-numeric>sunTech Boton de panico</th>
+                    <th md-column md-numeric>Llamada en cabina</th>
+                  </tr>
+                </thead>
+                <tbody md-body>
+                  <tr class="tr:nth-child(even)" md-row md-select-id="GOId" md-auto-select ng-repeat="dispositivo in resultReporteFechas ">
+                    <td md-cell>{{dispositivo.GOId}}</td>
+                    <!--td md-cell>{{dispositivo.vehicleIdentificationNumber}}</td-->
+                    <td>{{lstDevice.name}}</td>
+                    <td md-cell>{{dispositivo.GOSerialNumber}}</td>
+                    <td md-cell>{{dispositivo.LastCommunication}}</td>
+                    <td md-cell>{{Data.start}}</td>
+                    <td md-cell>{{Data.end}}</td>
+                    <td md-cell>{{dispositivo.GOPanicButton}}</td>
+                    <td md-cell>{{dispositivo.GOBelt}}</td>
+                    <td md-cell>{{dispositivo.GOReverse}}</td>
+                    <td md-cell>{{dispositivo.GOButton1}}</td>
+                    <td md-cell>{{dispositivo.GOButton2}}</td>
+                    <td md-cell>{{dispositivo.GOButton3}}</td>
+                    <td md-cell>{{dispositivo.GOButton4}}</td>
+                    <td md-cell>{{dispositivo.GOSafetyCircle}}</td>
+                    <td md-cell>{{dispositivo.SunTechId}}</td>
+                    <td md-cell>{{dispositivo.SunTechPanicButton}}</td>
+                    <td md-cell>{{dispositivo.SunTechCalls}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </md-table-container>
+
+            <md-table-pagination md-limit="query.limit " md-limit-options="[5, 10, 15] " md-page="query.page " md-page-select></md-table-pagination>
+
+            <!--btn cerrar panel-->
+            <md-expansion-panel-footer>
+              <div flex></div>
+              <md-button class="md-warn " ng-click="$panel.collapse() ">Ocultar</md-button>
+            </md-expansion-panel-footer>
+            <!--fin btn cerrar panel-->
+          </md-expansion-panel-expanded>
+        </md-expansion-panel>
+        <!--fin consultas por fecha de instalacion-->
+        <br>
+        <!--inicio panel consulta por vehiculo-->
+        <md-expansion-panel md-component-id="panelOne ">
+          <md-expansion-panel-collapsed>
+            <div class="md-summary " style="color:rgb(37, 71, 123)">
+              <font size="3 ">CONSULTA POR VEHÍCULO</font>
+            </div>
+            <md-expansion-panel-icon></md-expansion-panel-icon>
+          </md-expansion-panel-collapsed>
+          <md-expansion-panel-expanded>
+            <md-expansion-panel-header>
+              <div class="md-summary " style="color:rgb(37, 71, 123)">
+                <font size="3 ">Consulta por Vehículo</font>
+              </div>
+              <md-expansion-panel-icon></md-expansion-panel-icon>
+            </md-expansion-panel-header>
+            <md-expansion-panel-content>
+              <!--inicio devices modificado-->
+              <div layout="row" layout-wrap>
+                <div flex="33">
+                  <div flex>
+                    <br>
+                    <center>
+                      <div layout="row ">
+                        <md-input-container flex="80">
+                          <small class="md-caption ">
+                            <md-select multiple name="field " ng-model="dispositivoSeleccionado
+                              " placeholder="Buscar Vehículos... " data-md-container-class="selectdemoSelectHeader " ng-init="showOptions = true"
+                              my-on-focus="showOptions" md-on-close="showOptions=false">
+                              <md-select-header layout="column " class="demo-select-header " id="divFechas ">
+                                <md-input-container>
+                                  <input ng-model="busqueda " type="search " ng-model-options="{debounce: { 'default': 1000,
+                              'blur': 0}} " placeholder="Buscar Vehículos... " class="demo-header-searchbox md-text " ng-keydown="updateSearch($event) "
+                                  />
+                                </md-input-container>
+                              </md-select-header>
+                              <md-option ng-repeat="dispositivo in lstDeviceGeotab | filter: busqueda " ng-value="{{dispositivo}} ">{{dispositivo.name}}</md-option>
+                            </md-select>
+                            <div ng-messages="form.field.$error ">
+                            </div>
+                          </small>
+                        </md-input-container>
+                      </div>
+                    </center>
+                  </div>
+                </div>
+                <div flex="66">
+                  <div flex>
+                    <div layout="row" layout-xs="column">
+                      <div flex>
+                        <div class="container">
+                          <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                              <div flex-gt-xs>
+                                <h4>Del:</h4>
+                                <md-datepicker ng-model="Data.start" md-placeholder="Enter date"></md-datepicker>
+                              </div>
+                            </div>
+                          </md-content>
+                        </div>
+                      </div>
+                      <div flex>
+                        <div class="container">
+                          <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                              <div flex-gt-xs>
+                                <h4>Al:</h4>
+                                <md-datepicker ng-model="Data.end" md-placeholder="Enter date"></md-datepicker>
+                              </div>
+                            </div>
+                          </md-content>
+                        </div>
+                      </div>
+                      <!--btn consulta-->
+                      <acronym title="">
+                        <button class="optionsMenu_AutocompleteButton geotabButton" ng-click="consultaVehiculos()">
+                          <span class="md-caption">Consultar</span>
+                        </button>
+                      </acronym>
+                      <!-- fin btn consulta-->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <md-expansion-panel-footer>
+                <div flex="100">
+                  <acronym title="Exportar Tabla">
+                    <md-button id="fechaVehiculo " class="optionsMenu_AutocompleteButton geotabButton" ng-click="crearCSVvehiculo()">
+                      <i class="material-icons md-24">cloud_download </i>
+                    </md-button>
+                  </acronym>
+                </div>
+              </md-expansion-panel-footer>
+              <br>
+              <!--fin btn consultar-->
+              <md-table-container>
+                <!--ng-model="selected " esto va en la tabla-->
+                <table md-table md-row-select md-progress="promise " id="fechaDevice" style="width:100% ">
+                  <thead md-head>
+                    <tr md-row>
+                      <th md-column md-numeric>Id</th>
+                      <th md-column md-numeric>VIN </th->
+                      <th md-column md-numeric>Económico </th>
+                      <th md-column md-numeric>Numero de serie</th>
+                      <th md-column md-numeric>Ultima comunicacion Geotab</th>
+                      <th md-column md-numeric>Fecha inicio de consulta</th>
+                      <th md-column md-numeric>Fecha fin de consulta</th>
+                      <th md-column md-numeric>Geotab boton de panico</th>
+                      <th md-column md-numeric>Cinturon de seguridad</th>
+                      <th md-column md-numeric>Reversa</th>
+                      <th md-column md-numeric>Aux 5</th>
+                      <th md-column md-numeric>Aux 6</th>
+                      <th md-column md-numeric>Aux 7</th>
+                      <th md-column md-numeric>Aux 8</th>
+                      <!--th md-column md-numeric>Circulo de seguridad</th-->
+                      <th md-column md-numeric>IMEI cut</th>
+                      <th md-column md-numeric>sunTech Boton de panico</th>
+                      <th md-column md-numeric>Llamada en cabina</th>
+                    </tr>
+                  </thead>
+                  <tbody md-body>
+                    <tr md-row md-select-id="name " md-auto-select ng-repeat="totalEventos in eventos track by $index ">
+                      <td md-cell>{{totalEventos.ids}}</td>
+                      <td md-cell>{{totalEventos.vehicleIdentificationNumber}}</td>
+                      <td md-cell>{{totalEventos.name}}</td>
+                      <td md-cell>{{totalEventos.serialNumber}}</td>
+                      <td md-cell>{{totalEventos.comunicacion | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                      <td md-cell>{{Data.start | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                      <td md-cell>{{Data.end | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                      <td md-cell>{{totalEventos.btnPanico}}</td>
+                      <td md-cell>{{totalEventos.btncinturon}}</td>
+                      <td md-cell>{{totalEventos.btnReversa}}</td>
+                      <td md-cell>{{totalEventos.btnCirculo5}}</td>
+                      <td md-cell>{{totalEventos.btncirculo6}}</td>
+                      <td md-cell>{{totalEventos.btncirculo7}}</td>
+                      <td md-cell>{{totalEventos.btncirculo8}}</td>
+                      <!--td md-cell>{{dispositivo.GOSafetyCircle}}</td-->
+                      <td md-cell>{{totalEventos.idSuntech}}</td>
+                      <td md-cell>{{totalEventos.panicoSuntech}}</td>
+                      <td md-cell>{{totalEventos.llamadas}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </md-table-container>
+
+              <md-table-pagination md-limit="query.limit " md-limit-options="[5, 10, 15] " md-page-select></md-table-pagination>
+
+            </md-expansion-panel-content>
+            <!--btn cerrar panel-->
+            <script>
+            </script>
+            <md-expansion-panel-footer>
+              <div flex></div>
+              <md-button class="md-warn " ng-click="$panel.collapse() ">Ocultar</md-button>
+            </md-expansion-panel-footer>
+            <!--fin btn cerrar panel-->
+          </md-expansion-panel-expanded>
+        </md-expansion-panel>
+      </div>
+    </div>
+
+
+  </div>
+
+</body>
+
+</html>
